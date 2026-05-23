@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kali Linux — The Most Advanced Penetration Testing Distribution</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --kali-blue:#367BF0;
+  --kali-dark:#0a0a0f;
+  --kali-darker:#060609;
+  --kali-glow:rgba(54,123,240,0.6);
+  --kali-glow-soft:rgba(54,123,240,0.15);
+  --glass-bg:rgba(255,255,255,0.04);
+  --glass-border:rgba(255,255,255,0.08);
+  --glass-border-blue:rgba(54,123,240,0.3);
+  --text-primary:#f0f2ff;
+  --text-secondary:rgba(200,210,255,0.7);
+  --text-muted:rgba(150,160,200,0.5);
+  --font-display:'Orbitron',monospace;
+  --font-body:'Space Grotesk',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  background:var(--kali-darker);
+  color:var(--text-primary);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CUSTOM CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--kali-blue);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s,width .2s,height .2s,background .2s;mix-blend-mode:difference}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(54,123,240,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .15s ease-out,width .3s,height .3s,border-color .3s}
+body:hover #cursor{opacity:1}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--kali-darker)}
+::-webkit-scrollbar-thumb{background:var(--kali-blue);border-radius:2px}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1.2rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,6,9,0.7);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--glass-border);
+  transition:all .4s;
+}
+nav.scrolled{padding:.8rem 3rem;background:rgba(6,6,9,0.95)}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo img{height:32px;filter:brightness(1.2)}
+.nav-logo span{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text-primary);letter-spacing:2px}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.85rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:color .3s,text-shadow .3s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--kali-blue);transition:width .3s}
+.nav-links a:hover{color:var(--kali-blue);text-shadow:0 0 20px var(--kali-glow)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{
+  background:var(--kali-blue);color:#fff;
+  padding:.55rem 1.4rem;border-radius:4px;
+  text-decoration:none;font-size:.82rem;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  transition:all .3s;
+  box-shadow:0 0 20px rgba(54,123,240,0.4);
+  position:relative;overflow:hidden;
+}
+.nav-cta::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,0.2);border-radius:50%;transform:translate(-50%,-50%);transition:width .5s,height .5s}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(54,123,240,0.7)}
+.nav-cta:hover::before{width:300px;height:300px}
+
+/* CANVAS BG */
+#matrix-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.07;pointer-events:none}
+
+/* SECTIONS */
+section{position:relative;z-index:1}
+
+/* ===== HERO ===== */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:6rem 2rem 4rem;
+  overflow:hidden;text-align:center;
+  position:relative;
+}
+.hero-bg-orb{
+  position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;
+}
+.hero-orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(54,123,240,0.25),transparent 70%);top:-10%;left:-15%;animation:orbFloat1 8s ease-in-out infinite}
+.hero-orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(100,60,200,0.2),transparent 70%);top:20%;right:-10%;animation:orbFloat2 10s ease-in-out infinite}
+.hero-orb3{width:300px;height:300px;background:radial-gradient(circle,rgba(0,200,255,0.15),transparent 70%);bottom:10%;left:30%;animation:orbFloat3 7s ease-in-out infinite}
+@keyframes orbFloat1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.1)}}
+@keyframes orbFloat2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,40px) scale(0.9)}}
+@keyframes orbFloat3{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-20px)}}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--glass-bg);border:1px solid var(--glass-border-blue);
+  padding:.4rem 1.2rem;border-radius:100px;
+  font-size:.75rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--kali-blue);margin-bottom:2rem;
+  animation:fadeInDown .8s ease both;
+}
+.hero-tag .dot{width:6px;height:6px;background:var(--kali-blue);border-radius:50%;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 6px var(--kali-blue)}50%{opacity:.3;box-shadow:none}}
+
+.hero-headline{
+  font-family:var(--font-display);
+  font-size:clamp(2.5rem,7vw,6.5rem);
+  font-weight:900;
+  line-height:1.05;
+  letter-spacing:-1px;
+  margin-bottom:1.5rem;
+  animation:fadeInUp .9s ease .2s both;
+}
+.hero-headline .line-1{display:block;color:var(--text-primary)}
+.hero-headline .line-2{
+  display:block;
+  background:linear-gradient(135deg,var(--kali-blue),#8B5CF6,#06B6D4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(54,123,240,0.4));
+}
+.hero-sub{
+  font-size:clamp(1rem,2vw,1.2rem);color:var(--text-secondary);
+  max-width:640px;line-height:1.8;margin:0 auto 2.5rem;
+  animation:fadeInUp .9s ease .4s both;font-weight:300;
+}
+.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeInUp .9s ease .6s both}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--kali-blue);color:#fff;
+  padding:.9rem 2.2rem;border-radius:6px;text-decoration:none;
+  font-weight:700;font-size:.9rem;letter-spacing:1.5px;text-transform:uppercase;
+  transition:all .35s;box-shadow:0 0 30px rgba(54,123,240,0.5);
+  position:relative;overflow:hidden;
+}
+.btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 0 60px rgba(54,123,240,0.8)}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:transparent;color:var(--text-primary);
+  padding:.9rem 2.2rem;border-radius:6px;text-decoration:none;
+  font-weight:600;font-size:.9rem;letter-spacing:1.5px;text-transform:uppercase;
+  border:1px solid var(--glass-border);transition:all .35s;
+  backdrop-filter:blur(10px);
+}
+.btn-secondary:hover{border-color:var(--kali-blue);color:var(--kali-blue);background:var(--glass-bg);transform:translateY(-3px)}
+
+/* SCROLL INDICATOR */
+.scroll-indicator{
+  position:absolute;bottom:3rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--text-muted);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;
+  animation:fadeIn 1s ease 1.5s both;
+}
+.scroll-mouse{width:22px;height:34px;border:1.5px solid rgba(54,123,240,0.4);border-radius:12px;display:flex;align-items:flex-start;justify-content:center;padding:5px}
+.scroll-wheel{width:3px;height:8px;background:var(--kali-blue);border-radius:2px;animation:scrollWheel 2s ease-in-out infinite}
+@keyframes scrollWheel{0%{transform:translateY(0);opacity:1}100%{transform:translateY(10px);opacity:0}}
+
+/* 3D LAPTOP SHOWCASE */
+.laptop-scene{
+  position:relative;width:100%;max-width:900px;margin:3rem auto 0;
+  animation:fadeInUp 1s ease .8s both;
+  perspective:1000px;
+}
+.laptop-wrapper{
+  position:relative;
+  transform-style:preserve-3d;
+  animation:laptopFloat 6s ease-in-out infinite;
+}
+@keyframes laptopFloat{0%,100%{transform:rotateX(8deg) rotateY(-5deg) translateY(0)}50%{transform:rotateX(5deg) rotateY(-3deg) translateY(-15px)}}
+.laptop-glow{
+  position:absolute;bottom:-40px;left:10%;right:10%;height:80px;
+  background:radial-gradient(ellipse,rgba(54,123,240,0.5),transparent 70%);
+  filter:blur(20px);animation:glowPulse 3s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:.6}50%{opacity:1}}
+.laptop-img{width:100%;height:auto;display:block;filter:drop-shadow(0 40px 80px rgba(54,123,240,0.3))}
+
+/* STATS BAR */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--glass-border);
+  border-top:1px solid var(--glass-border);
+  border-bottom:1px solid var(--glass-border);
+  margin-top:6rem;
+}
+.stat-item{
+  padding:2.5rem 1.5rem;text-align:center;
+  background:rgba(6,6,9,0.9);
+  transition:background .3s;
+}
+.stat-item:hover{background:rgba(54,123,240,0.05)}
+.stat-number{
+  font-family:var(--font-display);font-size:2.5rem;font-weight:900;
+  color:var(--kali-blue);display:block;
+  animation:countUp .1s ease both;
+}
+.stat-label{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-top:.5rem}
+
+/* REVEAL ANIMATIONS */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-50px);transition:opacity .8s ease,transform .8s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(50px);transition:opacity .8s ease,transform .8s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+
+/* SECTION TITLES */
+.section-tag{
+  display:inline-block;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--kali-blue);font-weight:700;margin-bottom:1rem;
+  position:relative;padding-left:2rem;
+}
+.section-tag::before{content:'';position:absolute;left:0;top:50%;width:1.3rem;height:1px;background:var(--kali-blue)}
+.section-title{
+  font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:700;letter-spacing:-1px;line-height:1.1;margin-bottom:1rem;
+}
+.section-desc{color:var(--text-secondary);font-size:1.05rem;line-height:1.8;max-width:600px;font-weight:300}
+
+/* ===== STORY SECTION ===== */
+.story{padding:10rem 4rem;background:linear-gradient(180deg,var(--kali-darker) 0%,var(--kali-dark) 50%,var(--kali-darker) 100%)}
+.story-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8rem;align-items:center}
+.story-visual{position:relative}
+.terminal-window{
+  background:#0d0d14;
+  border:1px solid var(--glass-border-blue);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(54,123,240,0.2),0 0 0 1px rgba(54,123,240,0.1);
+  position:relative;
+}
+.terminal-window::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(54,123,240,0.03),transparent);pointer-events:none}
+.terminal-header{
+  padding:.8rem 1.2rem;background:rgba(255,255,255,0.03);
+  border-bottom:1px solid var(--glass-border);
+  display:flex;align-items:center;gap:8px;
+}
+.term-dot{width:12px;height:12px;border-radius:50%}
+.term-dot.red{background:#ff5f57}
+.term-dot.yellow{background:#ffbd2e}
+.term-dot.green{background:#28c840}
+.terminal-body{padding:1.5rem;font-family:var(--font-mono);font-size:.8rem;line-height:1.9;min-height:280px}
+.term-line{display:flex;gap:.5rem;margin-bottom:.2rem;overflow:hidden}
+.term-prompt{color:#28c840}
+.term-cmd{color:#a0cfff}
+.term-output{color:var(--text-secondary);padding-left:1.2rem}
+.term-highlight{color:#f7c060}
+.term-blue{color:var(--kali-blue)}
+.term-cursor{display:inline-block;width:8px;height:14px;background:var(--kali-blue);animation:blink 1s step-end infinite;vertical-align:text-bottom}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.story-content .section-title .accent{
+  background:linear-gradient(90deg,var(--kali-blue),#8B5CF6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.story-points{list-style:none;margin-top:2.5rem}
+.story-points li{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:1.2rem 0;border-bottom:1px solid rgba(255,255,255,0.04);
+  transition:all .3s;
+}
+.story-points li:hover{padding-left:.5rem}
+.story-point-icon{
+  width:40px;height:40px;flex-shrink:0;
+  background:var(--kali-glow-soft);border:1px solid var(--glass-border-blue);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;transition:all .3s;
+}
+.story-points li:hover .story-point-icon{background:var(--kali-blue);box-shadow:0 0 20px var(--kali-glow)}
+.story-point-text strong{display:block;font-weight:600;margin-bottom:.2rem}
+.story-point-text span{color:var(--text-secondary);font-size:.9rem;font-weight:300}
+
+/* ===== PLATFORM SECTION ===== */
+.platform{padding:10rem 4rem;background:var(--kali-dark)}
+.platform-inner{max-width:1300px;margin:0 auto}
+.platform-header{text-align:center;margin-bottom:5rem}
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.platform-card{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:16px;padding:2.5rem;
+  transition:all .4s cubic-bezier(.175,.885,.32,1.275);
+  position:relative;overflow:hidden;cursor:default;
+  backdrop-filter:blur(10px);
+}
+.platform-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--kali-blue),transparent);
+  transform:scaleX(0);transition:transform .4s;
+}
+.platform-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 20%,rgba(54,123,240,0.05),transparent 60%);
+  opacity:0;transition:opacity .4s;
+}
+.platform-card:hover{
+  transform:translateY(-8px) scale(1.01);
+  border-color:rgba(54,123,240,0.3);
+  box-shadow:0 30px 60px rgba(54,123,240,0.15);
+}
+.platform-card:hover::before{transform:scaleX(1)}
+.platform-card:hover::after{opacity:1}
+.platform-card.featured{
+  grid-column:span 2;
+  background:linear-gradient(135deg,rgba(54,123,240,0.08),rgba(100,60,200,0.05));
+  border-color:rgba(54,123,240,0.2);
+}
+.card-icon{
+  width:56px;height:56px;
+  background:var(--kali-glow-soft);border:1px solid var(--glass-border-blue);
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:1.5rem;transition:all .3s;position:relative;z-index:1;
+}
+.platform-card:hover .card-icon{background:rgba(54,123,240,0.25);box-shadow:0 0 30px var(--kali-glow)}
+.card-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:.8rem;position:relative;z-index:1}
+.card-desc{color:var(--text-secondary);font-size:.9rem;line-height:1.7;font-weight:300;position:relative;z-index:1}
+.card-link{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--kali-blue);font-size:.8rem;font-weight:600;
+  text-decoration:none;margin-top:1.2rem;letter-spacing:1px;text-transform:uppercase;
+  transition:gap .3s;position:relative;z-index:1;
+}
+.card-link:hover{gap:10px}
+
+/* ===== TOOLS SECTION ===== */
+.tools{padding:10rem 4rem;background:var(--kali-darker);overflow:hidden}
+.tools-inner{max-width:1300px;margin:0 auto}
+.tools-header{text-align:center;margin-bottom:5rem}
+.tools-ticker-wrap{overflow:hidden;margin:3rem 0;position:relative}
+.tools-ticker-wrap::before,.tools-ticker-wrap::after{
+  content:'';position:absolute;top:0;bottom:0;width:200px;z-index:2;pointer-events:none;
+}
+.tools-ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--kali-darker),transparent)}
+.tools-ticker-wrap::after{right:0;background:linear-gradient(270deg,var(--kali-darker),transparent)}
+.tools-ticker{display:flex;gap:1.5rem;width:max-content}
+.tools-ticker-inner{display:flex;gap:1.5rem;animation:tickerScroll 30s linear infinite}
+.tools-ticker-inner:hover{animation-play-state:paused}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tool-chip{
+  display:flex;align-items:center;gap:10px;
+  background:var(--glass-bg);border:1px solid var(--glass-border);
+  padding:.7rem 1.4rem;border-radius:100px;white-space:nowrap;
+  transition:all .3s;flex-shrink:0;
+}
+.tool-chip:hover{background:var(--kali-glow-soft);border-color:var(--kali-blue);transform:scale(1.05)}
+.tool-chip img{width:24px;height:24px;object-fit:contain;filter:brightness(1.1)}
+.tool-chip-name{font-size:.85rem;font-weight:600;color:var(--text-secondary)}
+.tool-chip:hover .tool-chip-name{color:var(--text-primary)}
+
+.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--glass-border);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden;margin-top:4rem}
+.tool-item{
+  background:var(--kali-darker);padding:1.8rem;
+  display:flex;flex-direction:column;align-items:center;gap:.8rem;text-align:center;
+  transition:all .3s;position:relative;overflow:hidden;
+}
+.tool-item::before{content:'';position:absolute;inset:0;background:var(--kali-glow-soft);opacity:0;transition:opacity .3s}
+.tool-item:hover{background:rgba(54,123,240,0.05)}
+.tool-item:hover::before{opacity:1}
+.tool-item img{width:48px;height:48px;object-fit:contain;transition:transform .3s;position:relative;z-index:1;filter:drop-shadow(0 0 8px rgba(54,123,240,0.3))}
+.tool-item:hover img{transform:scale(1.15) translateY(-4px)}
+.tool-item span{font-size:.8rem;font-weight:600;color:var(--text-secondary);position:relative;z-index:1}
+.tool-item:hover span{color:var(--text-primary)}
+
+/* ===== EVERYWHERE SECTION ===== */
+.everywhere{padding:10rem 4rem;background:linear-gradient(180deg,var(--kali-darker),var(--kali-dark))}
+.everywhere-inner{max-width:1300px;margin:0 auto}
+.everywhere-header{text-align:center;margin-bottom:5rem}
+.platforms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem}
+.platform-item{
+  background:var(--glass-bg);border:1px solid var(--glass-border);
+  border-radius:12px;padding:2rem;
+  transition:all .4s;text-align:center;
+  position:relative;overflow:hidden;
+}
+.platform-item::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--kali-blue),transparent);transform:scaleX(0);transition:transform .4s}
+.platform-item:hover{transform:translateY(-6px);border-color:rgba(54,123,240,0.25)}
+.platform-item:hover::after{transform:scaleX(1)}
+.platform-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
+.platform-name{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:.5rem;letter-spacing:1px}
+.platform-desc{color:var(--text-muted);font-size:.85rem;line-height:1.6;font-weight:300}
+
+/* ===== NETHUNTER SECTION ===== */
+.nethunter{
+  padding:10rem 4rem;
+  background:var(--kali-dark);
+  position:relative;overflow:hidden;
+}
+.nethunter::before{
+  content:'KALI';
+  position:absolute;right:-5%;top:50%;transform:translateY(-50%);
+  font-family:var(--font-display);font-size:20vw;font-weight:900;
+  color:transparent;-webkit-text-stroke:1px rgba(54,123,240,0.05);
+  pointer-events:none;user-select:none;
+  animation:textFloat 8s ease-in-out infinite;
+}
+@keyframes textFloat{0%,100%{transform:translateY(-50%)}50%{transform:translateY(-55%)}}
+.nethunter-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
+.nethunter-phones{position:relative;height:500px}
+.phone{
+  position:absolute;width:200px;
+  background:#0d0d14;border-radius:30px;
+  border:1px solid var(--glass-border-blue);
+  overflow:hidden;
+  box-shadow:0 30px 60px rgba(0,0,0,0.5),0 0 40px rgba(54,123,240,0.15);
+}
+.phone-1{left:0;top:20px;height:400px;transform:rotate(-8deg);animation:phone1Float 5s ease-in-out infinite}
+.phone-2{right:0;top:60px;height:420px;transform:rotate(5deg);animation:phone2Float 6s ease-in-out infinite}
+@keyframes phone1Float{0%,100%{transform:rotate(-8deg) translateY(0)}50%{transform:rotate(-6deg) translateY(-12px)}}
+@keyframes phone2Float{0%,100%{transform:rotate(5deg) translateY(0)}50%{transform:rotate(7deg) translateY(-8px)}}
+.phone-screen{padding:1rem;height:100%;background:linear-gradient(180deg,#0a0a14,#060610)}
+.phone-header{display:flex;align-items:center;gap:6px;margin-bottom:1rem}
+.phone-dot{width:8px;height:8px;border-radius:50%;background:var(--kali-blue)}
+.phone-title{font-family:var(--font-mono);font-size:.6rem;color:var(--kali-blue)}
+.phone-content{font-family:var(--font-mono);font-size:.55rem;color:var(--text-secondary);line-height:1.8}
+.phone-line-green{color:#28c840}
+.phone-line-blue{color:var(--kali-blue)}
+.phone-line-red{color:#ff5f57}
+
+/* ===== COMMUNITY SECTION ===== */
+.community{padding:10rem 4rem;background:var(--kali-darker)}
+.community-inner{max-width:1200px;margin:0 auto;text-align:center}
+.community-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:4rem}
+.community-link{
+  display:flex;align-items:center;gap:10px;
+  background:var(--glass-bg);border:1px solid var(--glass-border);
+  padding:1rem 2rem;border-radius:12px;text-decoration:none;
+  color:var(--text-secondary);transition:all .35s;
+  font-weight:600;font-size:.9rem;
+}
+.community-link:hover{
+  background:var(--kali-glow-soft);border-color:var(--kali-blue);
+  color:var(--text-primary);transform:translateY(-4px);
+  box-shadow:0 10px 30px rgba(54,123,240,0.2);
+}
+.community-icon{font-size:1.5rem}
+
+/* ===== CTA SECTION ===== */
+.cta-section{
+  padding:10rem 4rem;
+  background:linear-gradient(135deg,rgba(54,123,240,0.08),rgba(100,60,200,0.05),rgba(0,200,255,0.03));
+  border-top:1px solid var(--glass-border);
+  text-align:center;position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 100%,rgba(54,123,240,0.15),transparent 70%);
+  pointer-events:none;
+}
+.cta-inner{max-width:700px;margin:0 auto;position:relative;z-index:1}
+.cta-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);font-weight:900;letter-spacing:-1px;margin-bottom:1.5rem;line-height:1.1}
+.cta-desc{color:var(--text-secondary);font-size:1.1rem;line-height:1.8;margin-bottom:3rem;font-weight:300}
+.cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.cta-version{
+  margin-top:2rem;font-size:.8rem;color:var(--text-muted);
+  font-family:var(--font-mono);letter-spacing:1px;
+}
+.version-badge{
+  display:inline-block;background:var(--glass-bg);border:1px solid var(--glass-border-blue);
+  padding:.3rem .8rem;border-radius:100px;color:var(--kali-blue);margin-left:.5rem;font-size:.75rem;
+}
+
+/* FOOTER */
+footer{
+  background:var(--kali-darker);
+  border-top:1px solid var(--glass-border);
+  padding:4rem;color:var(--text-muted);font-size:.8rem;
+}
+.footer-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem}
+.footer-brand img{height:36px;margin-bottom:1.2rem;filter:brightness(1.2)}
+.footer-brand p{line-height:1.7;max-width:280px}
+.footer-col h4{font-weight:700;color:var(--text-primary);margin-bottom:1.2rem;font-size:.85rem;letter-spacing:1px;text-transform:uppercase}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:.6rem}
+.footer-col a{color:var(--text-muted);text-decoration:none;transition:color .3s}
+.footer-col a:hover{color:var(--kali-blue)}
+.footer-bottom{max-width:1300px;margin:3rem auto 0;padding-top:2rem;border-top:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;font-size:.75rem}
+.footer-kali-logo{display:flex;align-items:center;gap:8px;color:var(--text-muted)}
+.footer-kali-logo span{font-family:var(--font-display);font-size:.9rem;font-weight:700;color:var(--text-secondary);letter-spacing:2px}
+
+/* PARALLAX ELEMENTS */
+.parallax-layer{will-change:transform}
+
+/* FLOATING PARTICLES */
+.particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.particle{
+  position:absolute;border-radius:50%;
+  background:var(--kali-blue);opacity:0;
+  animation:particleFly var(--dur) ease-in-out var(--delay) infinite;
+}
+@keyframes particleFly{
+  0%{opacity:0;transform:translateY(100vh) scale(0)}
+  10%{opacity:.6}
+  90%{opacity:.3}
+  100%{opacity:0;transform:translateY(-20vh) scale(1)}
+}
+
+/* SCAN LINE EFFECT */
+.scanline{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.05) 3px,rgba(0,0,0,.05) 4px);
+  pointer-events:none;z-index:0;opacity:.4;
+}
+
+/* GRID OVERLAY */
+.grid-overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:linear-gradient(rgba(54,123,240,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(54,123,240,0.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;z-index:0;
+}
+
+/* PROGRESS BAR */
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--kali-blue),#8B5CF6,#06B6D4);z-index:999;transition:width .1s}
+
+/* SECTION DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--glass-border),transparent);margin:0}
+
+/* TYPING ANIMATION */
+.typed-text::after{content:'|';color:var(--kali-blue);animation:blink 1s step-end infinite}
+
+/* COUNTER ANIMATION */
+@keyframes countUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOVER GLOW EFFECT */
+.glow-hover{transition:all .3s}
+.glow-hover:hover{filter:drop-shadow(0 0 20px var(--kali-glow))}
+
+/* BADGE */
+.badge{
+  display:inline-block;padding:.25rem .7rem;
+  background:rgba(54,123,240,0.15);border:1px solid rgba(54,123,240,0.3);
+  border-radius:100px;font-size:.7rem;font-weight:600;
+  color:var(--kali-blue);letter-spacing:1px;text-transform:uppercase;
+  margin-left:.8rem;vertical-align:middle;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .story-inner,.nethunter-inner{grid-template-columns:1fr;gap:3rem}
+  .platform-grid{grid-template-columns:1fr}
+  .platform-card.featured{grid-column:span 1}
+  .tools-grid{grid-template-columns:repeat(2,1fr)}
+  .platforms-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .footer-inner{grid-template-columns:1fr 1fr}
+  .story,.platform,.tools,.everywhere,.nethunter,.community,.cta-section{padding:6rem 2rem}
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+<div class="scanline"></div>
+<div class="grid-overlay"></div>
+<div class="particles" id="particles"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div class="progress-bar" id="progress"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">
+    <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Linux" onerror="this.style.display='none'">
+    <span>KALI</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#story">About</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#everywhere">Platform</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="https://www.kali.org/docs" target="_blank">Docs</a></li>
+  </ul>
+  <a href="https://www.kali.org/get-kali" target="_blank" class="nav-cta">Get Kali</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg-orb hero-orb1"></div>
+  <div class="hero-bg-orb hero-orb2"></div>
+  <div class="hero-bg-orb hero-orb3"></div>
+
+  <div class="hero-tag"><span class="dot"></span>Advanced Penetration Testing</div>
+
+  <h1 class="hero-headline">
+    <span class="line-1">The Most Advanced</span>
+    <span class="line-2">Penetration Testing</span>
+    <span class="line-1">Distribution. Ever.</span>
+  </h1>
+  <p class="hero-sub">Kali Linux is an open-source, Debian-based Linux distribution geared towards information security tasks — Penetration Testing, Security Research, Computer Forensics, and Reverse Engineering.</p>
+
+  <div class="hero-actions">
+    <a href="https://www.kali.org/get-kali" target="_blank" class="btn-primary">⬇ Download Kali Linux</a>
+    <a href="https://www.kali.org/docs" target="_blank" class="btn-secondary">📖 Documentation</a>
+  </div>
+
+  <div class="laptop-scene parallax-layer" data-speed="0.3">
+    <div class="laptop-wrapper">
+      <div class="laptop-glow"></div>
+      <img src="https://www.kali.org/images/notebook-kali-2024.1.jpg"
+        class="laptop-img glow-hover"
+        alt="Kali Linux Desktop"
+        onerror="this.src='https://www.kali.org/images/notebook.svg'">
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar" id="stats">
+  <div class="stat-item reveal">
+    <span class="stat-number" data-target="600">0</span>
+    <span class="stat-label">Security Tools</span>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:.1s">
+    <span class="stat-number" data-target="13" data-suffix="+">0</span>
+    <span class="stat-label">Years of Development</span>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:.2s">
+    <span class="stat-number" data-target="4" data-suffix="M+">0</span>
+    <span class="stat-label">Downloads per Year</span>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:.3s">
+    <span class="stat-number" data-target="20" data-suffix="+">0</span>
+    <span class="stat-label">Supported Platforms</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- STORY SECTION -->
+<section class="story" id="story">
+  <div class="story-inner">
+    <div class="story-visual reveal-left">
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="term-dot red"></div>
+          <div class="term-dot yellow"></div>
+          <div class="term-dot green"></div>
+          <span style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted);margin-left:.5rem">kali@kali: ~</span>
+        </div>
+        <div class="terminal-body" id="terminal">
+          <div class="term-line"><span class="term-prompt">┌──(kali㉿kali)-[~]</span></div>
+          <div class="term-line"><span class="term-prompt">└─$</span><span class="term-cmd"> nmap -sV -A target.local</span></div>
+          <div class="term-line"><span class="term-output">Starting Nmap 7.95...</span></div>
+          <div class="term-line"><span class="term-output">Nmap scan report for <span class="term-blue">target.local (192.168.1.1)</span></span></div>
+          <div class="term-line"><span class="term-output">PORT   STATE SERVICE VERSION</span></div>
+          <div class="term-line"><span class="term-output"><span class="term-highlight">22/tcp  open  ssh     OpenSSH 8.9</span></span></div>
+          <div class="term-line"><span class="term-output"><span class="term-highlight">80/tcp  open  http    Apache 2.4.52</span></span></div>
+          <div class="term-line"><span class="term-output"><span class="term-highlight">443/tcp open  https   nginx 1.22</span></span></div>
+          <div class="term-line" style="margin-top:.5rem"><span class="term-prompt">└─$</span><span class="term-cmd"> msfconsole -q</span></div>
+          <div class="term-line"><span class="term-output" style="color:#28c840">       =[ metasploit v6.4.0 ]</span></div>
+          <div class="term-line"><span class="term-output">+ -- --=[ 2400 exploits ]</span></div>
+          <div class="term-line"><span class="term-output">+ -- --=[ 1200 auxiliary ]</span></div>
+          <div class="term-line"><span class="term-prompt">msf6 ></span><span class="term-cursor"></span></div>
+        </div>
+      </div>
+      <!-- floating badge -->
+      <div style="position:absolute;bottom:-20px;right:-20px;background:rgba(54,123,240,0.15);border:1px solid rgba(54,123,240,0.3);backdrop-filter:blur(20px);border-radius:12px;padding:1rem 1.4rem;animation:float 4s ease-in-out infinite">
+        <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--kali-blue);margin-bottom:.3rem">▶ LIVE SESSION</div>
+        <div style="font-size:.85rem;font-weight:600">Target Compromised <span style="color:#28c840">✓</span></div>
+      </div>
+    </div>
+
+    <div class="story-content reveal-right">
+      <span class="section-tag">The Platform</span>
+      <h2 class="section-title">Not Just an OS.<br><span class="accent">A Weapon.</span></h2>
+      <p class="section-desc">Kali Linux is not about its tools, nor the operating system. Kali Linux is a <strong>platform</strong> — engineered for professionals who demand reliability under fire.</p>
+
+      <ul class="story-points">
+        <li>
+          <div class="story-point-icon">⚡</div>
+          <div class="story-point-text">
+            <strong>Optimized Out of the Box</strong>
+            <span>Pre-configured tools so professionals can sit down and start working immediately — zero friction from setup to exploitation.</span>
+          </div>
+        </li>
+        <li>
+          <div class="story-point-icon">🔧</div>
+          <div class="story-point-text">
+            <strong>600+ Security Tools</strong>
+            <span>From information gathering to final reporting — every tool a professional pentester needs, maintained and updated.</span>
+          </div>
+        </li>
+        <li>
+          <div class="story-point-icon">🌍</div>
+          <div class="story-point-text">
+            <strong>Runs Everywhere</strong>
+            <span>Bare metal, VM, cloud, containers, WSL2, ARM, mobile — Kali adapts to every environment and mission.</span>
+          </div>
+        </li>
+        <li>
+          <div class="story-point-icon">🏗️</div>
+          <div class="story-point-text">
+            <strong>Fully Customizable</strong>
+            <span>Metapackages and a documented ISO build process let you craft a perfectly optimized Kali for your specific mission.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PLATFORM FEATURES -->
+<section class="platform" id="platform">
+  <div class="platform-inner">
+    <div class="platform-header reveal">
+      <span class="section-tag">Features</span>
+      <h2 class="section-title">The Industry Standard</h2>
+      <p class="section-desc" style="margin:0 auto">Built by Offensive Security for security professionals. Trusted by penetration testers, red teams, and researchers worldwide.</p>
+    </div>
+    <div class="platform-grid">
+      <div class="platform-card featured reveal" style="transition-delay:.1s">
+        <div class="card-icon">🐉</div>
+        <h3 class="card-title">Kali Linux Desktop<span class="badge">Default</span></h3>
+        <p class="card-desc">The full Kali Linux experience with XFCE desktop environment. Optimized for performance with a sleek dark theme, complete with all 600+ tools pre-installed and configured. The flagship penetration testing platform trusted by security professionals globally.</p>
+        <a href="https://www.kali.org/get-kali" target="_blank" class="card-link">Download Now →</a>
+      </div>
+      <div class="platform-card reveal" style="transition-delay:.2s">
+        <div class="card-icon">🕵️</div>
+        <h3 class="card-title">Undercover Mode</h3>
+        <p class="card-desc">One command transforms Kali to look exactly like Windows 10. Use it in environments where you need to blend in.</p>
+        <a href="https://www.kali.org/docs/introduction/kali-undercover" target="_blank" class="card-link">Learn More →</a>
+      </div>
+      <div class="platform-card reveal" style="transition-delay:.3s">
+        <div class="card-icon">🖥️</div>
+        <h3 class="card-title">Win-KeX (WSL)</h3>
+        <p class="card-desc">A full Kali Desktop Experience inside Windows Subsystem for Linux. Share the desktop seamlessly with Windows apps.</p>
+        <a href="https://www.kali.org/docs/wsl/win-kex" target="_blank" class="card-link">Setup Guide →</a>
+      </div>
+      <div class="platform-card reveal" style="transition-delay:.15s">
+        <div class="card-icon">☁️</div>
+        <h3 class="card-title">Cloud Ready</h3>
+        <p class="card-desc">Pre-built images on AWS, Azure, and GCP. Launch your pentesting infrastructure in minutes without managing hardware.</p>
+        <a href="https://www.kali.org/docs/cloud" target="_blank" class="card-link">Cloud Docs →</a>
+      </div>
+      <div class="platform-card reveal" style="transition-delay:.25s">
+        <div class="card-icon">📦</div>
+        <h3 class="card-title">Containers</h3>
+        <p class="card-desc">Official Docker images for isolated testing environments. Deploy Kali anywhere containers run in seconds.</p>
+        <a href="https://www.kali.org/docs/containers" target="_blank" class="card-link">Docker Hub →</a>
+      </div>
+      <div class="platform-card reveal" style="transition-delay:.35s">
+        <div class="card-icon">💾</div>
+        <h3 class="card-title">ARM Support</h3>
+        <p class="card-desc">Runs on Raspberry Pi, Pinebook Pro, and dozens more ARM devices. Perfect low-cost covert assessment hardware.</p>
+        <a href="https://www.kali.org/docs/arm" target="_blank" class="card-link">ARM Devices →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOOLS SECTION -->
+<section class="tools" id="tools">
+  <div class="tools-inner">
+    <div class="tools-header reveal">
+      <span class="section-tag">Arsenal</span>
+      <h2 class="section-title">600+ Tools. Zero Compromise.</h2>
+      <p class="section-desc" style="margin:0 auto">From information gathering to exploitation, post-exploitation, and reporting — every tool you need, curated and maintained.</p>
+    </div>
+
+    <!-- Ticker -->
+    <div class="tools-ticker-wrap">
+      <div class="tools-ticker">
+        <div class="tools-ticker-inner" id="ticker1">
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-nmap.svg" alt=""><span class="tool-chip-name">Nmap</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-metasploit.svg" alt=""><span class="tool-chip-name">Metasploit</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-burp.svg" alt=""><span class="tool-chip-name">Burp Suite</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-wireshark.svg" alt=""><span class="tool-chip-name">Wireshark</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-aircrack-ng.svg" alt=""><span class="tool-chip-name">Aircrack-ng</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-hydra.svg" alt=""><span class="tool-chip-name">Hydra</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-sqlmap.svg" alt=""><span class="tool-chip-name">SQLMap</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-john.svg" alt=""><span class="tool-chip-name">John the Ripper</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-maltego.svg" alt=""><span class="tool-chip-name">Maltego</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-netexec.svg" alt=""><span class="tool-chip-name">NetExec</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-ffuf.svg" alt=""><span class="tool-chip-name">FFUF</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-responder.svg" alt=""><span class="tool-chip-name">Responder</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-starkiller.svg" alt=""><span class="tool-chip-name">Starkiller</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-powershell-empire.svg" alt=""><span class="tool-chip-name">Empire</span></div>
+        </div>
+        <div class="tools-ticker-inner" aria-hidden="true">
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-nmap.svg" alt=""><span class="tool-chip-name">Nmap</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-metasploit.svg" alt=""><span class="tool-chip-name">Metasploit</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-burp.svg" alt=""><span class="tool-chip-name">Burp Suite</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-wireshark.svg" alt=""><span class="tool-chip-name">Wireshark</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-aircrack-ng.svg" alt=""><span class="tool-chip-name">Aircrack-ng</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-hydra.svg" alt=""><span class="tool-chip-name">Hydra</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-sqlmap.svg" alt=""><span class="tool-chip-name">SQLMap</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-john.svg" alt=""><span class="tool-chip-name">John the Ripper</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-maltego.svg" alt=""><span class="tool-chip-name">Maltego</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-netexec.svg" alt=""><span class="tool-chip-name">NetExec</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-ffuf.svg" alt=""><span class="tool-chip-name">FFUF</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-responder.svg" alt=""><span class="tool-chip-name">Responder</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-starkiller.svg" alt=""><span class="tool-chip-name">Starkiller</span></div>
+          <div class="tool-chip"><img src="https://www.kali.org/images/tool-logo-powershell-empire.svg" alt=""><span class="tool-chip-name">Empire</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool Grid -->
+    <div class="tools-grid reveal">
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-nmap.svg" alt="Nmap" onerror="this.style.display='none'">
+        <span>Nmap</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-metasploit.svg" alt="Metasploit" onerror="this.style.display='none'">
+        <span>Metasploit</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-burp.svg" alt="Burp Suite" onerror="this.style.display='none'">
+        <span>Burp Suite</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-wireshark.svg" alt="Wireshark" onerror="this.style.display='none'">
+        <span>Wireshark</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-aircrack-ng.svg" alt="Aircrack-ng" onerror="this.style.display='none'">
+        <span>Aircrack-ng</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-hydra.svg" alt="Hydra" onerror="this.style.display='none'">
+        <span>Hydra</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-sqlmap.svg" alt="SQLMap" onerror="this.style.display='none'">
+        <span>SQLMap</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-john.svg" alt="John the Ripper" onerror="this.style.display='none'">
+        <span>John the Ripper</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-maltego.svg" alt="Maltego" onerror="this.style.display='none'">
+        <span>Maltego</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-netexec.svg" alt="NetExec" onerror="this.style.display='none'">
+        <span>NetExec</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-ffuf.svg" alt="FFUF" onerror="this.style.display='none'">
+        <span>FFUF</span>
+      </div>
+      <div class="tool-item">
+        <img src="https://www.kali.org/images/tool-logo-responder.svg" alt="Responder" onerror="this.style.display='none'">
+        <span>Responder</span>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem">
+      <a href="https://www.kali.org/tools" target="_blank" class="btn-secondary">View All 600+ Tools →</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- NETHUNTER -->
+<section class="nethunter" id="nethunter">
+  <div class="nethunter-inner">
+    <div class="nethunter-phones reveal-left">
+      <div class="phone phone-1">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <div class="phone-dot"></div>
+            <span class="phone-title">NETHUNTER</span>
+          </div>
+          <div class="phone-content">
+            <div class="phone-line-green">root@kali:~#</div>
+            <div>$ nethunter start</div>
+            <div class="phone-line-blue">[*] Starting Kali...</div>
+            <div class="phone-line-green">[+] Container ready</div>
+            <div style="margin-top:.8rem">$ aircrack-ng</div>
+            <div class="phone-line-blue">[*] Scanning WiFi...</div>
+            <div class="phone-line-green">[+] Networks found: 24</div>
+            <div style="margin-top:.8rem">$ msfconsole</div>
+            <div class="phone-line-blue">[*] Loading modules</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone phone-2">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <div class="phone-dot"></div>
+            <span class="phone-title">KEX DESKTOP</span>
+          </div>
+          <div class="phone-content">
+            <div class="phone-line-green">[Desktop Mode]</div>
+            <div style="margin:.5rem 0;padding:.5rem;background:rgba(54,123,240,0.1);border-radius:4px;border-left:2px solid var(--kali-blue)">
+              <div style="font-size:.6rem;color:var(--kali-blue)">KALI LINUX NETHUNTER</div>
+              <div>Full Desktop on Android</div>
+            </div>
+            <div class="phone-line-blue">$ nmap -sV 192.168.1.0/24</div>
+            <div class="phone-line-green">Scanning 256 hosts...</div>
+            <div>22/tcp open ssh</div>
+            <div class="phone-line-red">80/tcp filtered http</div>
+            <div class="phone-line-green">443/tcp open https</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal-right">
+      <span class="section-tag">Mobile</span>
+      <h2 class="section-title">Kali NetHunter</h2>
+      <p class="section-desc">A mobile penetration testing platform for Android devices. Carry a full Kali Linux instance in your pocket — App, App Store, Kali Container, and KeX desktop included.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem">
+        <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;padding:1.2rem">
+          <div style="font-size:1.3rem;margin-bottom:.5rem">📱</div>
+          <div style="font-weight:600;font-size:.9rem;margin-bottom:.3rem">NetHunter App</div>
+          <div style="color:var(--text-muted);font-size:.8rem;font-weight:300">Full Android application with MITM framework and HID attacks</div>
+        </div>
+        <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;padding:1.2rem">
+          <div style="font-size:1.3rem;margin-bottom:.5rem">🏪</div>
+          <div style="font-weight:600;font-size:.9rem;margin-bottom:.3rem">App Store</div>
+          <div style="color:var(--text-muted);font-size:.8rem;font-weight:300">Dedicated store for security tools optimized for mobile use</div>
+        </div>
+        <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;padding:1.2rem">
+          <div style="font-size:1.3rem;margin-bottom:.5rem">📦</div>
+          <div style="font-weight:600;font-size:.9rem;margin-bottom:.3rem">Kali Container</div>
+          <div style="color:var(--text-muted);font-size:.8rem;font-weight:300">Full Kali Linux chroot environment running natively</div>
+        </div>
+        <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;padding:1.2rem">
+          <div style="font-size:1.3rem;margin-bottom:.5rem">🖥️</div>
+          <div style="font-weight:600;font-size:.9rem;margin-bottom:.3rem">KeX Desktop</div>
+          <div style="color:var(--text-muted);font-size:.8rem;font-weight:300">Full XFCE desktop environment on your Android device</div>
+        </div>
+      </div>
+
+      <a href="https://www.kali.org/get-kali/#kali-mobile" target="_blank" class="btn-primary" style="display:inline-flex;margin-top:2rem">Get NetHunter →</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EVERYWHERE -->
+<section class="everywhere" id="everywhere">
+  <div class="everywhere-inner">
+    <div class="everywhere-header reveal">
+      <span class="section-tag">Deployment</span>
+      <h2 class="section-title">Kali Everywhere</h2>
+      <p class="section-desc" style="margin:0 auto">A version of Kali is always close to you, no matter where you need it. Every platform. Every environment.</p>
+    </div>
+
+    <div class="platforms-grid">
+      <div class="platform-item reveal" style="transition-delay:.05s">
+        <span class="platform-icon">💻</span>
+        <div class="platform-name">Bare Metal</div>
+        <p class="platform-desc">Full hardware access — perfect for in-built WiFi chipsets, GPU acceleration, and maximum performance during assessments.</p>
+      </div>
+      <div class="platform-item reveal" style="transition-delay:.1s">
+        <span class="platform-icon">🖥️</span>
+        <div class="platform-name">Virtual Machine</div>
+        <p class="platform-desc">Pre-built VMware and VirtualBox images. Up and running in minutes. Perfect for isolated testing environments.</p>
+      </div>
+      <div class="platform-item reveal" style="transition-delay:.15s">
+        <span class="platform-icon">☁️</span>
+        <div class="platform-name">Cloud</div>
+        <p class="platform-desc">AWS, Azure, and GCP marketplace images. Launch scalable infrastructure instantly without managing physical hardware.</p>
+      </div>
+      <div class="platform-item reveal" style="transition-delay:.2s">
+        <span class="platform-icon">🪟</span>
+        <div class="platform-name">Windows WSL</div>
+        <p class="platform-desc">Win-KeX gives you a full Kali Desktop inside Windows via WSL2. Seamlessly share the desktop with Windows applications.</p>
+      </div>
+      <div class="platform-item reveal" style="transition-delay:.25s">
+        <span class="platform-icon">📱</span>
+        <div class="platform-name">Mobile (NetHunter)</div>
+        <p class="platform-desc">Full penetration testing platform on Android. Carry Kali Linux with you wherever you go. Pocket-sized power.</p>
+      </div>
+      <div class="platform-item reveal" style="transition-delay:.3s">
+        <span class="platform-icon">🔌</span>
+        <div class="platform-name">ARM Devices</div>
+        <p class="platform-desc">Raspberry Pi, Pinebook Pro, and 20+ more ARM boards. Discreet, low-powered, cheap — perfect leave-behind devices.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMMUNITY -->
+<section class="community" id="community">
+  <div class="community-inner">
+    <div class="reveal">
+      <span class="section-tag">Community</span>
+      <h2 class="section-title">Join the Community</h2>
+      <p class="section-desc" style="margin:0 auto 0">With its BackTrack lineage, Kali Linux has a vibrant, active global community of security professionals, researchers, and enthusiasts.</p>
+    </div>
+
+    <div class="community-links">
+      <a href="https://forums.kali.org" target="_blank" class="community-link reveal" style="transition-delay:.05s">
+        <span class="community-icon">💬</span>
+        <div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:.2rem">Forums</div>
+          <div>Community Support</div>
+        </div>
+      </a>
+      <a href="https://discord.kali.org" target="_blank" class="community-link reveal" style="transition-delay:.1s">
+        <span class="community-icon">🎮</span>
+        <div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:.2rem">Discord</div>
+          <div>Join the Server</div>
+        </div>
+      </a>
+      <a href="https://www.kali.org/newsletter" target="_blank" class="community-link reveal" style="transition-delay:.15s">
+        <span class="community-icon">📧</span>
+        <div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:.2rem">Newsletter</div>
+          <div>Stay Updated</div>
+        </div>
+      </a>
+      <a href="https://bugs.kali.org" target="_blank" class="community-link reveal" style="transition-delay:.2s">
+        <span class="community-icon">🐛</span>
+        <div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:.2rem">Bug Tracker</div>
+          <div>Report Issues</div>
+        </div>
+      </a>
+      <a href="https://www.kali.org/docs/community/contribute" target="_blank" class="community-link reveal" style="transition-delay:.25s">
+        <span class="community-icon">🤝</span>
+        <div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:.2rem">Contribute</div>
+          <div>Get Involved</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner reveal">
+    <div class="hero-tag" style="justify-content:center;margin-bottom:2rem"><span class="dot"></span>Ready to Start?</div>
+    <h2 class="cta-title">Take Control.<br>Start Hacking.</h2>
+    <p class="cta-desc">Join millions of security professionals worldwide who trust Kali Linux as their platform of choice. Free, open-source, and always evolving.</p>
+    <div class="cta-actions">
+      <a href="https://www.kali.org/get-kali" target="_blank" class="btn-primary">⬇ Download Kali Linux</a>
+      <a href="https://www.kali.org/docs" target="_blank" class="btn-secondary">📚 Read the Docs</a>
+    </div>
+    <p class="cta-version">Current Release <span class="version-badge">Kali 2024.4</span> — Debian-based · Rolling Release</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Linux" onerror="this.style.display='none'">
+      <p>Kali Linux is maintained and funded by Offensive Security. It is an advanced penetration testing distribution used by security professionals worldwide.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Download</h4>
+      <ul>
+        <li><a href="https://www.kali.org/get-kali#kali-installer-images" target="_blank">Installer Images</a></li>
+        <li><a href="https://www.kali.org/get-kali#kali-virtual-machines" target="_blank">Virtual Machines</a></li>
+        <li><a href="https://www.kali.org/get-kali#kali-mobile" target="_blank">NetHunter</a></li>
+        <li><a href="https://www.kali.org/get-kali#kali-cloud" target="_blank">Cloud Images</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="https://www.kali.org/docs" target="_blank">Documentation</a></li>
+        <li><a href="https://www.kali.org/tools" target="_blank">Tools Listing</a></li>
+        <li><a href="https://www.kali.org/blog" target="_blank">Blog</a></li>
+        <li><a href="https://www.kali.org/wallpapers" target="_blank">Wallpapers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Community</h4>
+      <ul>
+        <li><a href="https://forums.kali.org" target="_blank">Forums</a></li>
+        <li><a href="https://discord.kali.org" target="_blank">Discord</a></li>
+        <li><a href="https://bugs.kali.org" target="_blank">Bug Tracker</a></li>
+        <li><a href="https://www.kali.org/about-us" target="_blank">About The Team</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-kali-logo">
+      <span>KALI LINUX</span>
+    </div>
+    <span>© 2013–2025 Offensive Security · Kali Linux is a trademark of OffSec</span>
+    <span>Made for Security Professionals</span>
+  </div>
+</footer>
+
+<script>
+// ===== CURSOR =====
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
+document.querySelectorAll('a,button,.platform-card,.tool-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='rgba(54,123,240,0.8)'});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(54,123,240,0.5)'});
+});
+
+// ===== MATRIX RAIN =====
+const canvas=document.getElementById('matrix-canvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init()});
+const chars='アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ0123456789ABCDEF{}[]<>|/\\:;';
+let drops=[];
+function init(){drops=[];for(let i=0;i<canvas.width/16;i++)drops[i]=Math.random()*-canvas.height}
+init();
+function drawMatrix(){
+  ctx.fillStyle='rgba(6,6,9,0.05)';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#367BF0';ctx.font='14px JetBrains Mono,monospace';
+  drops.forEach((y,i)=>{
+    const c=chars[Math.floor(Math.random()*chars.length)];
+    ctx.globalAlpha=Math.random()*.8+.2;
+    ctx.fillText(c,i*16,y);
+    drops[i]+=16;
+    if(drops[i]>canvas.height+100&&Math.random()>.97)drops[i]=Math.random()*-200;
+  });
+  ctx.globalAlpha=1;
+}
+setInterval(drawMatrix,50);
+
+// ===== PARTICLES =====
+const particlesContainer=document.getElementById('particles');
+for(let i=0;i<30;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  const size=Math.random()*3+1;
+  p.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;--dur:${Math.random()*15+8}s;--delay:${Math.random()*10}s`;
+  particlesContainer.appendChild(p);
+}
+
+// ===== SCROLL PROGRESS =====
+const progressBar=document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const pct=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;
+  progressBar.style.width=pct+'%';
+});
+
+// ===== NAV SCROLL =====
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>60)});
+
+// ===== REVEAL ON SCROLL =====
+const reveals=document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible')}});
+},{threshold:.1,rootMargin:'0px 0px -60px 0px'});
+reveals.forEach(r=>observer.observe(r));
+
+// ===== PARALLAX =====
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY;
+  document.querySelectorAll('.parallax-layer').forEach(el=>{
+    const speed=parseFloat(el.dataset.speed||0.2);
+    el.style.transform=`translateY(${sy*speed}px)`;
+  });
+  // orbs parallax
+  const orbs=document.querySelectorAll('.hero-bg-orb');
+  orbs.forEach((o,i)=>{o.style.transform=`translateY(${sy*(0.1+i*.05)}px)`});
+});
+
+// ===== COUNTER ANIMATION =====
+function animateCounter(el,target,suffix=''){
+  const duration=2000,start=Date.now();
+  (function tick(){
+    const elapsed=Date.now()-start,progress=Math.min(elapsed/duration,1);
+    const eased=1-Math.pow(1-progress,4);
+    const val=Math.round(eased*target);
+    el.textContent=val+(progress>=1?suffix:'');
+    if(progress<1)requestAnimationFrame(tick);
+  })();
+}
+const statsObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const counters=e.target.querySelectorAll('.stat-number[data-target]');
+      counters.forEach(c=>{
+        const t=parseInt(c.dataset.target),s=c.dataset.suffix||'';
+        animateCounter(c,t,s);
+        delete c.dataset.target;
+      });
+    }
+  });
+},{threshold:.5});
+statsObs.observe(document.getElementById('stats'));
+
+// ===== 3D TILT on laptop =====
+const laptopScene=document.querySelector('.laptop-scene');
+if(laptopScene){
+  laptopScene.addEventListener('mousemove',e=>{
+    const r=laptopScene.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    const wrapper=laptopScene.querySelector('.laptop-wrapper');
+    wrapper.style.animation='none';
+    wrapper.style.transform=`rotateX(${-y*20+8}deg) rotateY(${x*20-5}deg) translateY(0)`;
+  });
+  laptopScene.addEventListener('mouseleave',()=>{
+    const wrapper=laptopScene.querySelector('.laptop-wrapper');
+    wrapper.style.animation='laptopFloat 6s ease-in-out infinite';
+    wrapper.style.transform='';
+  });
+}
+
+// ===== TYPED TEXT IN TERMINAL =====
+const termLines=document.querySelectorAll('.term-line');
+termLines.forEach((line,i)=>{
+  line.style.opacity='0';
+  line.style.transform='translateX(-10px)';
+  line.style.transition=`opacity .3s ease ${i*0.15}s, transform .3s ease ${i*0.15}s`;
+});
+const termObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      termLines.forEach(line=>{line.style.opacity='1';line.style.transform='translateX(0)'});
+    }
+  });
+},{threshold:.3});
+const termWindow=document.querySelector('.terminal-window');
+if(termWindow)termObs.observe(termWindow);
+
+// ===== CARD MOUSE GLOW =====
+document.querySelectorAll('.platform-card,.platform-item').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=e.clientX-r.left,y=e.clientY-r.top;
+    card.style.setProperty('--gx',x+'px');
+    card.style.setProperty('--gy',y+'px');
+    card.style.background=`radial-gradient(circle at ${x}px ${y}px, rgba(54,123,240,0.08), rgba(255,255,255,0.02) 60%)`;
+  });
+  card.addEventListener('mouseleave',()=>{card.style.background=''});
+});
+
+// ===== FLOATING ANIMATION for badges =====
+const floats=document.querySelectorAll('[style*="float"]');
+</script>
+</body>
+</html>
