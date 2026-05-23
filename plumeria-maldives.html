@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plumeria Maldives — Thinadhoo Island, Vaavu Atoll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --gold:#c9a96e;
+    --gold-light:#e8d5a3;
+    --gold-dark:#9a7340;
+    --ocean:#0a2a3d;
+    --ocean-mid:#0d3b57;
+    --ocean-light:#1a5276;
+    --sand:#f5f0e8;
+    --sand-dark:#e8dcc8;
+    --white:#ffffff;
+    --text-dark:#1a1a1a;
+    --text-muted:#6b5e4e;
+  }
+  html{scroll-behavior:smooth;overflow-x:hidden}
+  body{font-family:'Montserrat',sans-serif;background:#050f17;color:var(--white);overflow-x:hidden;cursor:none}
+  
+  /* Custom cursor */
+  .cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transition:transform 0.1s;transform:translate(-50%,-50%)}
+  .cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(201,169,110,0.5);border-radius:50%;pointer-events:none;z-index:99998;transition:transform 0.15s,width 0.3s,height 0.3s;transform:translate(-50%,-50%)}
+  .cursor-ring.expand{width:60px;height:60px;border-color:rgba(201,169,110,0.3)}
+
+  /* Scrollbar */
+  ::-webkit-scrollbar{width:3px}
+  ::-webkit-scrollbar-track{background:#050f17}
+  ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+  /* ===== HERO ===== */
+  #hero{position:relative;height:100vh;min-height:700px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .hero-bg{position:absolute;inset:0;z-index:0}
+  .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1.1);transition:transform 10s ease-out}
+  .hero-bg.loaded img{transform:scale(1)}
+  .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,15,23,0.75) 0%,rgba(10,42,61,0.55) 50%,rgba(5,15,23,0.7) 100%)}
+  .hero-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:float-particle linear infinite}
+  @keyframes float-particle{0%{opacity:0;transform:translateY(100vh) translateX(0)}10%{opacity:0.6}90%{opacity:0.2}100%{opacity:0;transform:translateY(-10vh) translateX(20px)}}
+  
+  .hero-content{position:relative;z-index:10;text-align:center;padding:0 20px;max-width:900px}
+  .hero-eyebrow{font-family:'Montserrat',sans-serif;font-weight:300;font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--gold-light);opacity:0;transform:translateY(30px);transition:all 1s ease 0.3s}
+  .hero-eyebrow.visible{opacity:1;transform:translateY(0)}
+  .hero-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(56px,8vw,110px);line-height:0.9;color:var(--white);margin:24px 0;opacity:0;transform:translateY(40px);transition:all 1.2s ease 0.6s}
+  .hero-title.visible{opacity:1;transform:translateY(0)}
+  .hero-title em{font-style:italic;color:var(--gold-light)}
+  .hero-subtitle{font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(13px,1.5vw,16px);letter-spacing:3px;color:rgba(255,255,255,0.7);text-transform:uppercase;opacity:0;transform:translateY(30px);transition:all 1s ease 0.9s}
+  .hero-subtitle.visible{opacity:1;transform:translateY(0)}
+  .hero-cta{display:flex;gap:20px;justify-content:center;margin-top:48px;opacity:0;transform:translateY(30px);transition:all 1s ease 1.2s}
+  .hero-cta.visible{opacity:1;transform:translateY(0)}
+  .btn-primary{padding:16px 44px;background:var(--gold);color:var(--ocean);font-family:'Montserrat',sans-serif;font-weight:500;font-size:11px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:all 0.4s;border:1px solid var(--gold);clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
+  .btn-primary:hover{background:transparent;color:var(--gold)}
+  .btn-outline{padding:16px 44px;background:transparent;color:var(--white);font-family:'Montserrat',sans-serif;font-weight:400;font-size:11px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;border:1px solid rgba(255,255,255,0.4);transition:all 0.4s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
+  .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+  
+  .hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;z-index:10;opacity:0;transition:opacity 1s ease 2s}
+  .hero-scroll.visible{opacity:1}
+  .scroll-text{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.5)}
+  .scroll-line{width:1px;height:60px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scroll-pulse 2s ease-in-out infinite}
+  @keyframes scroll-pulse{0%,100%{opacity:0.3;transform:scaleY(0.5);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
+
+  /* ===== NAV ===== */
+  nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:24px 60px;display:flex;align-items:center;justify-content:space-between;transition:all 0.5s}
+  nav.scrolled{background:rgba(5,15,23,0.95);backdrop-filter:blur(20px);padding:16px 60px;border-bottom:1px solid rgba(201,169,110,0.15)}
+  .nav-logo{text-decoration:none;display:flex;align-items:center;gap:16px}
+  .nav-logo img{height:48px;filter:brightness(0) invert(1);transition:filter 0.3s}
+  .nav-links{display:flex;gap:36px;list-style:none}
+  .nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:400;transition:color 0.3s;position:relative}
+  .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width 0.3s}
+  .nav-links a:hover{color:var(--gold)}
+  .nav-links a:hover::after{width:100%}
+  .nav-book{padding:12px 28px;background:var(--gold);color:var(--ocean);font-size:9px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;font-weight:600;transition:all 0.3s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
+  .nav-book:hover{background:var(--gold-light)}
+
+  /* ===== SECTION BASE ===== */
+  section{position:relative}
+  .section-label{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);font-weight:400;display:flex;align-items:center;gap:16px;margin-bottom:16px}
+  .section-label::before{content:'';width:40px;height:1px;background:var(--gold)}
+  .section-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,5vw,72px);line-height:1.05;color:var(--white)}
+  .section-title em{font-style:italic;color:var(--gold-light)}
+  .section-body{font-weight:300;font-size:15px;line-height:1.9;color:rgba(255,255,255,0.65);max-width:560px}
+  
+  /* Reveal animation */
+  .reveal{opacity:0;transform:translateY(50px);transition:all 0.9s cubic-bezier(0.16,1,0.3,1)}
+  .reveal.left{transform:translateX(-50px)}
+  .reveal.right{transform:translateX(50px)}
+  .reveal.visible{opacity:1;transform:translate(0,0)}
+
+  /* ===== ABOUT ===== */
+  #about{padding:140px 60px;background:#050f17;overflow:hidden}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1300px;margin:0 auto}
+  .about-images{position:relative;height:580px}
+  .about-img-main{position:absolute;width:75%;height:90%;object-fit:cover;top:0;right:0;border:1px solid rgba(201,169,110,0.2)}
+  .about-img-accent{position:absolute;width:45%;height:55%;object-fit:cover;bottom:0;left:0;border:2px solid var(--ocean-mid);outline:1px solid rgba(201,169,110,0.3);outline-offset:8px}
+  .about-gold-line{position:absolute;top:30%;left:32%;width:1px;height:40%;background:linear-gradient(to bottom,transparent,var(--gold),transparent)}
+  .about-text{padding-left:20px}
+  .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+  .stat-card{border:1px solid rgba(201,169,110,0.2);padding:24px;position:relative;overflow:hidden;transition:border-color 0.3s}
+  .stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,169,110,0.05),transparent);opacity:0;transition:opacity 0.3s}
+  .stat-card:hover{border-color:rgba(201,169,110,0.5)}
+  .stat-card:hover::before{opacity:1}
+  .stat-number{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--gold-light)}
+  .stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:4px}
+
+  /* ===== ROOMS ===== */
+  #rooms{padding:140px 0;background:linear-gradient(to bottom,#050f17,#060d18)}
+  .rooms-header{text-align:center;padding:0 60px;margin-bottom:80px}
+  .rooms-header .section-label{justify-content:center}
+  .rooms-header .section-label::before{display:none}
+  .rooms-header .section-label::after{content:'';width:40px;height:1px;background:var(--gold)}
+  .rooms-track{display:grid;grid-template-columns:repeat(5,380px);gap:2px;padding:0 60px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .rooms-track::-webkit-scrollbar{display:none}
+  .room-card{position:relative;height:560px;overflow:hidden;cursor:pointer}
+  .room-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+  .room-card:hover img{transform:scale(1.08)}
+  .room-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,15,23,0.95) 0%,rgba(5,15,23,0.3) 50%,transparent 100%);transition:background 0.5s}
+  .room-card:hover .room-card-overlay{background:linear-gradient(to top,rgba(5,15,23,0.98) 0%,rgba(5,15,23,0.5) 60%,rgba(5,15,23,0.1) 100%)}
+  .room-card-content{position:absolute;bottom:0;left:0;right:0;padding:36px 28px;transform:translateY(60px);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1)}
+  .room-card:hover .room-card-content{transform:translateY(0)}
+  .room-number{font-size:9px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+  .room-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--white);margin-bottom:12px}
+  .room-desc{font-size:12px;line-height:1.8;color:rgba(255,255,255,0.6);opacity:0;transition:opacity 0.4s 0.1s;margin-bottom:20px}
+  .room-card:hover .room-desc{opacity:1}
+  .room-amenities{display:flex;flex-wrap:wrap;gap:8px;opacity:0;transition:opacity 0.4s 0.2s}
+  .room-card:hover .room-amenities{opacity:1}
+  .amenity-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border:1px solid rgba(201,169,110,0.3);color:var(--gold-light)}
+  .room-book-link{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);text-decoration:none;margin-top:16px;opacity:0;transition:opacity 0.4s 0.3s}
+  .room-book-link::after{content:'→';transition:transform 0.3s}
+  .room-book-link:hover::after{transform:translateX(4px)}
+  .room-card:hover .room-book-link{opacity:1}
+
+  /* ===== PARALLAX OCEAN ===== */
+  .parallax-ocean{position:relative;height:600px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .parallax-ocean-bg{position:absolute;inset:-20%;background-image:url('https://plumeriamaldives.com/images/uploads/615/3291_776Beach.jpg');background-size:cover;background-position:center;will-change:transform}
+  .parallax-ocean-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,15,23,0.7),rgba(10,42,61,0.6))}
+  .parallax-quote{position:relative;z-index:2;text-align:center;padding:0 20px;max-width:800px}
+  .quote-mark{font-family:'Cormorant Garamond',serif;font-size:120px;color:rgba(201,169,110,0.2);line-height:0.5;margin-bottom:32px}
+  .quote-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(24px,3.5vw,42px);font-weight:300;line-height:1.3;color:var(--white)}
+  .quote-attr{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-top:28px}
+
+  /* ===== AMENITIES ===== */
+  #amenities{padding:140px 60px;background:#060d18}
+  .amenities-inner{max-width:1300px;margin:0 auto}
+  .amenities-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:64px}
+  .amenity-card{padding:48px 32px;border:1px solid rgba(201,169,110,0.1);position:relative;overflow:hidden;transition:border-color 0.4s,transform 0.4s}
+  .amenity-card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--gold);transition:width 0.5s}
+  .amenity-card:hover{border-color:rgba(201,169,110,0.4);transform:translateY(-4px)}
+  .amenity-card:hover::after{width:100%}
+  .amenity-icon-wrap{width:56px;height:56px;border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:24px;transition:border-color 0.3s,background 0.3s}
+  .amenity-card:hover .amenity-icon-wrap{border-color:var(--gold);background:rgba(201,169,110,0.1)}
+  .amenity-icon{font-size:24px;color:var(--gold)}
+  .amenity-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--white);margin-bottom:12px}
+  .amenity-desc{font-size:12px;line-height:1.8;color:rgba(255,255,255,0.5)}
+
+  /* ===== ATTRACTIONS ===== */
+  #attractions{padding:140px 60px;background:#050f17}
+  .attractions-inner{max-width:1300px;margin:0 auto}
+  .attractions-layout{display:grid;grid-template-columns:1fr 2fr;gap:80px;align-items:start;margin-top:64px}
+  .attractions-list{display:flex;flex-direction:column;gap:0}
+  .attraction-item{padding:20px 0;border-bottom:1px solid rgba(201,169,110,0.1);cursor:pointer;transition:padding-left 0.3s}
+  .attraction-item.active,.attraction-item:hover{padding-left:16px}
+  .attraction-item-num{font-size:9px;letter-spacing:3px;color:var(--gold);opacity:0.6}
+  .attraction-item-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:rgba(255,255,255,0.7);transition:color 0.3s;margin-top:4px}
+  .attraction-item.active .attraction-item-name,.attraction-item:hover .attraction-item-name{color:var(--white)}
+  .attraction-display{position:sticky;top:120px}
+  .attraction-image{width:100%;height:460px;object-fit:cover;border:1px solid rgba(201,169,110,0.2);transition:opacity 0.5s}
+
+  /* ===== GALLERY ===== */
+  #gallery{padding:140px 60px;background:#060d18}
+  .gallery-inner{max-width:1300px;margin:0 auto}
+  .gallery-masonry{columns:3;column-gap:8px;margin-top:64px}
+  .gallery-item{break-inside:avoid;margin-bottom:8px;overflow:hidden;position:relative;cursor:pointer}
+  .gallery-item img{width:100%;display:block;transition:transform 0.6s cubic-bezier(0.16,1,0.3,1),filter 0.4s}
+  .gallery-item:hover img{transform:scale(1.05);filter:brightness(1.1)}
+  .gallery-item-overlay{position:absolute;inset:0;background:rgba(5,15,23,0);transition:background 0.4s;display:flex;align-items:center;justify-content:center}
+  .gallery-item:hover .gallery-item-overlay{background:rgba(5,15,23,0.3)}
+  .gallery-zoom{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:0;transition:opacity 0.3s}
+  .gallery-item:hover .gallery-zoom{opacity:1}
+
+  /* ===== TESTIMONIALS ===== */
+  #testimonials{padding:140px 60px;background:linear-gradient(135deg,#050f17,#060d18,#050f17)}
+  .testimonials-inner{max-width:1100px;margin:0 auto;text-align:center}
+  .testimonials-track{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px}
+  .testimonial-card{padding:40px;border:1px solid rgba(201,169,110,0.15);position:relative;transition:border-color 0.4s,transform 0.4s}
+  .testimonial-card:hover{border-color:rgba(201,169,110,0.4);transform:translateY(-6px)}
+  .testimonial-stars{color:var(--gold);font-size:14px;letter-spacing:4px;margin-bottom:20px}
+  .testimonial-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.7;color:rgba(255,255,255,0.8);margin-bottom:28px}
+  .testimonial-author{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+  .testimonial-card::before{content:'"';position:absolute;top:20px;right:24px;font-family:'Cormorant Garamond',serif;font-size:80px;color:rgba(201,169,110,0.08);line-height:1}
+
+  /* ===== FAQ ===== */
+  #faq{padding:140px 60px;background:#050f17}
+  .faq-inner{max-width:900px;margin:0 auto}
+  .faq-list{margin-top:64px}
+  .faq-item{border-bottom:1px solid rgba(201,169,110,0.15)}
+  .faq-question{width:100%;background:none;border:none;color:var(--white);font-family:'Montserrat',sans-serif;font-size:14px;font-weight:400;letter-spacing:1px;text-align:left;padding:28px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:color 0.3s}
+  .faq-question:hover{color:var(--gold)}
+  .faq-toggle{font-size:20px;color:var(--gold);transition:transform 0.4s;flex-shrink:0}
+  .faq-item.open .faq-toggle{transform:rotate(45deg)}
+  .faq-answer{max-height:0;overflow:hidden;transition:max-height 0.5s cubic-bezier(0.16,1,0.3,1)}
+  .faq-item.open .faq-answer{max-height:300px}
+  .faq-answer p{padding:0 0 28px;font-size:13px;line-height:1.9;color:rgba(255,255,255,0.6)}
+
+  /* ===== CONTACT ===== */
+  #contact{padding:140px 60px;background:#060d18;overflow:hidden}
+  .contact-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+  .contact-info-item{display:flex;gap:20px;align-items:flex-start;padding:24px 0;border-bottom:1px solid rgba(201,169,110,0.1)}
+  .contact-icon{width:40px;height:40px;border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:var(--gold)}
+  .contact-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+  .contact-value{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.6}
+  .contact-value a{color:rgba(255,255,255,0.8);text-decoration:none;transition:color 0.3s}
+  .contact-value a:hover{color:var(--gold)}
+  .contact-map{width:100%;height:400px;border:1px solid rgba(201,169,110,0.2);filter:grayscale(100%) invert(90%) hue-rotate(180deg) brightness(0.9)}
+  .contact-socials{display:flex;gap:16px;margin-top:32px}
+  .social-btn{width:44px;height:44px;border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--gold);font-size:16px;transition:all 0.3s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
+  .social-btn:hover{background:var(--gold);color:var(--ocean)}
+  .contact-book-btn{display:inline-flex;align-items:center;gap:12px;padding:18px 48px;background:var(--gold);color:var(--ocean);font-size:10px;letter-spacing:4px;text-transform:uppercase;font-weight:600;text-decoration:none;transition:all 0.4s;margin-top:40px;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%)}
+  .contact-book-btn:hover{background:var(--gold-light);transform:translateX(4px)}
+
+  /* ===== FOOTER ===== */
+  footer{background:#020810;border-top:1px solid rgba(201,169,110,0.15);padding:60px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px}
+  .footer-brand img{height:48px;filter:brightness(0) invert(1) opacity(0.8);margin-bottom:20px}
+  .footer-brand p{font-size:12px;line-height:1.8;color:rgba(255,255,255,0.4);max-width:280px}
+  .footer-col-title{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+  .footer-links{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .footer-links a{font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.3s;letter-spacing:0.5px}
+  .footer-links a:hover{color:var(--gold)}
+  .footer-bottom{background:#020810;padding:20px 60px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.05)}
+  .footer-copy{font-size:11px;color:rgba(255,255,255,0.3)}
+  .footer-copy span{color:var(--gold)}
+  
+  /* ===== LIGHTBOX ===== */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:none;align-items:center;justify-content:center;padding:40px}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border:1px solid rgba(201,169,110,0.2)}
+  .lightbox-close{position:absolute;top:20px;right:20px;font-size:30px;color:var(--gold);cursor:pointer;background:none;border:none;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+
+  /* ===== 3D SCENE ===== */
+  .scene-3d{position:relative;height:500px;overflow:hidden;background:#050f17;perspective:1000px}
+  .scene-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform-style:preserve-3d}
+  .floating-card{position:absolute;width:200px;height:130px;border:1px solid rgba(201,169,110,0.3);background:rgba(10,42,61,0.4);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;animation:float-3d ease-in-out infinite}
+  @keyframes float-3d{0%,100%{transform:translateY(0) rotateX(5deg) rotateY(var(--ry))}50%{transform:translateY(-20px) rotateX(5deg) rotateY(var(--ry))}}
+  .fc-num{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:300;color:var(--gold-light)}
+  .fc-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5)}
+  
+  /* ===== BLOG SECTION ===== */
+  #blog{padding:140px 60px;background:#060d18}
+  .blog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:64px;max-width:1300px;margin-left:auto;margin-right:auto}
+  .blog-card{position:relative;overflow:hidden;border:1px solid rgba(201,169,110,0.15);transition:border-color 0.4s}
+  .blog-card:hover{border-color:rgba(201,169,110,0.4)}
+  .blog-card img{width:100%;height:280px;object-fit:cover;transition:transform 0.6s}
+  .blog-card:hover img{transform:scale(1.04)}
+  .blog-card-body{padding:32px}
+  .blog-category{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  .blog-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--white);line-height:1.2;margin-bottom:16px}
+  .blog-excerpt{font-size:12px;line-height:1.8;color:rgba(255,255,255,0.5)}
+  .blog-read-more{display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);text-decoration:none;margin-top:20px;transition:gap 0.3s}
+  .blog-read-more:hover{gap:16px}
+
+  /* ===== WHATSAPP FLOAT ===== */
+  .whatsapp-float{position:fixed;bottom:40px;right:40px;z-index:900;width:56px;height:56px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,0.4);transition:transform 0.3s,box-shadow 0.3s}
+  .whatsapp-float:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(37,211,102,0.6)}
+  .whatsapp-float svg{width:28px;height:28px;fill:white}
+
+  /* Horizontal scroll indicator for rooms */
+  .rooms-hint{text-align:center;margin-top:16px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+
+  @media(max-width:1024px){
+    nav{padding:20px 30px}
+    nav.scrolled{padding:14px 30px}
+    .nav-links{display:none}
+    #about{padding:80px 30px}
+    .about-grid{grid-template-columns:1fr;gap:40px}
+    .about-images{height:360px}
+    #rooms{padding:80px 0}
+    .rooms-track{grid-template-columns:repeat(5,300px)}
+    #amenities,#attractions,#gallery,#testimonials,#faq,#contact,#blog{padding:80px 30px}
+    .amenities-grid{grid-template-columns:repeat(2,1fr)}
+    .attractions-layout{grid-template-columns:1fr}
+    .gallery-masonry{columns:2}
+    .testimonials-track{grid-template-columns:1fr}
+    .contact-inner{grid-template-columns:1fr}
+    footer{grid-template-columns:1fr 1fr;padding:40px 30px}
+    .footer-bottom{padding:16px 30px}
+    .blog-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- WhatsApp float -->
+<a href="https://wa.me/+9609339441" class="whatsapp-float" target="_blank" rel="noopener" title="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">
+    <img src="https://plumeriamaldives.com/images/uploads/logos/1739947328DGF_20250123125900_0766261001737637140_463_Plumeria_logo.png" alt="Plumeria Maldives">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#rooms">Rooms</a></li>
+    <li><a href="#amenities">Amenities</a></li>
+    <li><a href="#attractions">Attractions</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="https://forms.gle/gE993yuDdKUpkFye9" class="nav-book" target="_blank">Book Now</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg" id="hero-bg">
+    <img src="https://plumeriamaldives.com/images/uploads/615/3291_776Beach.jpg" alt="Plumeria Maldives Beach">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow" id="hero-eyebrow">Vaavu Atoll · Thinadhoo Island · Maldives</div>
+    <h1 class="hero-title" id="hero-title">Plumeria<br><em>Maldives</em></h1>
+    <p class="hero-subtitle" id="hero-subtitle">Where paradise meets refined luxury</p>
+    <div class="hero-cta" id="hero-cta">
+      <a href="https://forms.gle/gE993yuDdKUpkFye9" class="btn-primary" target="_blank">Reserve Your Stay</a>
+      <a href="#about" class="btn-outline">Discover More</a>
+    </div>
+  </div>
+  <div class="hero-scroll" id="hero-scroll">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-images reveal left">
+      <img class="about-img-main" src="https://plumeriamaldives.com/images/uploads/615/3291_78Beach.jpg" alt="Plumeria Maldives">
+      <img class="about-img-accent" src="https://plumeriamaldives.com/images/uploads/615/3291_344Beach.jpg" alt="Plumeria Maldives Beach">
+      <div class="about-gold-line"></div>
+    </div>
+    <div class="about-text reveal right">
+      <div class="section-label">Our Story</div>
+      <h2 class="section-title">The Best Place to<br><em>Enjoy Your Holiday</em></h2>
+      <p class="section-body" style="margin-top:28px">Nestled on the pristine shores of Thinadhoo Island in Vaavu Atoll, Plumeria Maldives offers an idyllic blend of affordable luxury and unparalleled comfort, making it one of the best-kept secrets in the Maldives.</p>
+      <p class="section-body" style="margin-top:16px">With elegantly designed rooms that boast panoramic ocean views, an inviting indoor pool, and a private beach area, this boutique hotel provides a unique, intimate setting for those seeking a peaceful retreat. Plumeria Maldives delivers a luxurious experience without the hefty price tag, combining exceptional service, comfort, and breathtaking natural beauty.</p>
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-number">5</div>
+          <div class="stat-label">Room Categories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">24h</div>
+          <div class="stat-label">Room Service</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">360°</div>
+          <div class="stat-label">Ocean Views</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Memories Made</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS -->
+<section id="rooms">
+  <div class="rooms-header">
+    <div class="section-label reveal">Our Rooms</div>
+    <h2 class="section-title reveal">Comfortable Rooms &amp;<br><em>Exceptional Service</em></h2>
+  </div>
+  <div class="rooms-track" id="rooms-track">
+    <div class="room-card">
+      <img src="https://plumeriamaldives.com/images/uploads/615/3291_Plumeria_Standard_Room_1.jpg" alt="Deluxe Room" loading="lazy">
+      <div class="room-card-overlay"></div>
+      <div class="room-card-content">
+        <div class="room-number">Room Type 01</div>
+        <h3 class="room-name">Deluxe Room</h3>
+        <p class="room-desc">Modern furnishings, comfortable beds, and stunning views of the island's natural beauty.</p>
+        <div class="room-amenities">
+          <span class="amenity-tag">King Bed</span>
+          <span class="amenity-tag">Netflix TV</span>
+          <span class="amenity-tag">Free WiFi</span>
+        </div>
+        <a href="https://forms.gle/gE993yuDdKUpkFye9" class="room-book-link" target="_blank">Reserve Now</a>
+      </div>
+    </div>
+    <div class="room-card">
+      <img src="https://plumeriamaldives.com/images/uploads/615/3291_Plumeria_Super_Deluxe_Room_2.jpg" alt="Super Deluxe Room" loading="lazy">
+      <div class="room-card-overlay"></div>
+      <div class="room-card-content">
+        <div class="room-number">Room Type 02</div>
+        <h3 class="room-name">Super Deluxe</h3>
+        <p class="room-desc">Contemporary furnishings, king-sized bed, and stunning tropical landscape views.</p>
+        <div class="room-amenities">
+          <span class="amenity-tag">King Bed</span>
+          <span class="amenity-tag">Locker</span>
+          <span class="amenity-tag">Kitchen</span>
+        </div>
+        <a href="https://forms.gle/gE993yuDdKUpkFye9" class="room-book-link" target="_blank">Reserve Now</a>
+      </div>
+    </div>
+    <div class="room-card">
+      <img src="https://plumeriamaldives.com/images/uploads/615/3291_Bach_Villa_Rooms__3_.jpg" alt="Super Deluxe Plus" loading="lazy">
+      <div class="room-card-overlay"></div>
+      <div class="room-card-content">
+        <div class="room-number">Room Type 03</div>
+        <h3 class="room-name">Super Deluxe Plus</h3>
+        <p class="room-desc">Private balcony, walk-in shower, minibar, and air conditioning for maximum comfort.</p>
+        <div class="room-amenities">
+          <span class="amenity-tag">Balcony</span>
+          <span class="amenity-tag">Minibar</span>
+          <span class="amenity-tag">Walk-in Shower</span>
+        </div>
+        <a href="https://forms.gle/gE993yuDdKUpkFye9" class="room-book-link" target="_blank">Reserve Now</a>
+      </div>
+    </div>
+    <div class="room-card">
+      <img src="https://plumeriamaldives.com/images/uploads/615/3291_Bach_Villa_Rooms__3_.jpg" alt="Garden Room" loading="lazy">
+      <div class="room-card-overlay"></div>
+      <div class="room-card-content">
+        <div class="room-number">Room Type 04</div>
+        <h3 class="room-name">Garden Room</h3>
+        <p class="room-desc">Surrounded by lush garden views, private patio, and tranquil island atmosphere.</p>
+        <div class="room-amenities">
+          <span class="amenity-tag">Garden View</span>
+          <span class="amenity-tag">Patio</span>
+          <span class="amenity-tag">AC</span>
+        </div>
+        <a href="https://forms.gle/gE993yuDdKUpkFye9" class="room-book-link" target="_blank">Reserve Now</a>
+      </div>
+    </div>
+    <div class="room-card">
+      <img src="https://plumeriamaldives.com/images/uploads/615/3291_plumeria_maldives_ocean_view_room_balcony_view_ocean_sea_beach_.jpg" alt="Ocean View" loading="lazy">
+      <div class="room-card-overlay"></div>
+      <div class="room-card-content">
+        <div class="room-number">Room Type 05</div>
+        <h3 class="room-name">Ocean View</h3>
+        <p class="room-desc">Crystal-clear waters and pristine white sand beaches visible from your private balcony.</p>
+        <div class="room-amenities">
+          <span class="amenity-tag">Ocean View</span>
+          <span class="amenity-tag">Private Balcony</span>
+          <span class="amenity-tag">Flat-screen TV</span>
+        </div>
+        <a href="https://forms.gle/gE993yuDdKUpkFye9" class="room-book-link" target="_blank">Reserve Now</a>
+      </div>
+    </div>
+  </div>
+  <p class="rooms-hint">← Scroll to explore all room types →</p>
+</section>
+
+<!-- PARALLAX QUOTE -->
+<div class="parallax-ocean" id="parallax-section">
+  <div class="parallax-ocean-bg" id="parallax-bg"></div>
+  <div class="parallax-ocean-overlay"></div>
+  <div class="parallax-quote reveal">
+    <div class="quote-mark">"</div>
+    <p class="quote-text">An experience where the ocean meets your soul — Plumeria Maldives redefines what it means to truly escape</p>
+    <p class="quote-attr">Thinadhoo Island · Vaavu Atoll · Maldives</p>
+  </div>
+</div>
+
+<!-- AMENITIES -->
+<section id="amenities">
+  <div class="amenities-inner">
+    <div class="section-label reveal">What We Offer</div>
+    <h2 class="section-title reveal">Feel &amp; <em>Relax Yourself</em></h2>
+    <div class="amenities-grid">
+      <div class="amenity-card reveal">
+        <div class="amenity-icon-wrap"><span class="amenity-icon">📶</span></div>
+        <h3 class="amenity-title">Free High-Speed WiFi</h3>
+        <p class="amenity-desc">Stay connected throughout your stay with complimentary high-speed wireless internet access available in all rooms and common areas.</p>
+      </div>
+      <div class="amenity-card reveal">
+        <div class="amenity-icon-wrap"><span class="amenity-icon">🍽️</span></div>
+        <h3 class="amenity-title">24h Room Service</h3>
+        <p class="amenity-desc">In-room dining available around the clock, with a specially curated overnight menu for late-night indulgences.</p>
+      </div>
+      <div class="amenity-card reveal">
+        <div class="amenity-icon-wrap"><span class="amenity-icon">🧹</span></div>
+        <h3 class="amenity-title">Daily Housekeeping</h3>
+        <p class="amenity-desc">Our meticulous housekeeping team ensures your room is immaculate every single day of your stay.</p>
+      </div>
+      <div class="amenity-card reveal">
+        <div class="amenity-icon-wrap"><span class="amenity-icon">🚗</span></div>
+        <h3 class="amenity-title">Free Parking</h3>
+        <p class="amenity-desc">Complimentary parking facilities available on-site for all guests throughout their entire stay.</p>
+      </div>
+      <div class="amenity-card reveal">
+        <div class="amenity-icon-wrap"><span class="amenity-icon">🏊</span></div>
+        <h3 class="amenity-title">Indoor Pool</h3>
+        <p class="amenity-desc">Refresh in our inviting indoor pool, located on the ground floor — perfect for a morning swim or evening dip.</p>
+      </div>
+      <div class="amenity-card reveal">
+        <div class="amenity-icon-wrap"><span class="amenity-icon">🌊</span></div>
+        <h3 class="amenity-title">Private Beach Area</h3>
+        <p class="amenity-desc">Exclusive access to a serene private beach for guests to enjoy the stunning Maldivian shoreline in peace.</p>
+      </div>
+      <div class="amenity-card reveal">
+        <div class="amenity-icon-wrap"><span class="amenity-icon">🚤</span></div>
+        <h3 class="amenity-title">Speedboat Transfers</h3>
+        <p class="amenity-desc">Airport speedboat service at 10am and 4pm daily. Sea plane transfers available upon request for a spectacular arrival.</p>
+      </div>
+      <div class="amenity-card reveal">
+        <div class="amenity-icon-wrap"><span class="amenity-icon">📺</span></div>
+        <h3 class="amenity-title">HD TV with Netflix</h3>
+        <p class="amenity-desc">Every room equipped with a premium flat-screen TV featuring Netflix and cable channels for your entertainment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3D FLOATING STATS SCENE -->
+<div class="scene-3d">
+  <div class="scene-inner" id="scene-inner">
+    <div class="floating-card" style="--ry:-15deg;left:10%;animation-duration:4s;animation-delay:0s">
+      <div class="fc-num">5★</div>
+      <div class="fc-label">Guest Experience</div>
+    </div>
+    <div class="floating-card" style="--ry:5deg;left:30%;top:20%;animation-duration:5s;animation-delay:0.5s">
+      <div class="fc-num">10AM</div>
+      <div class="fc-label">Check-In Time</div>
+    </div>
+    <div class="floating-card" style="--ry:-5deg;left:50%;animation-duration:4.5s;animation-delay:1s">
+      <div class="fc-num">24h</div>
+      <div class="fc-label">Room Service</div>
+    </div>
+    <div class="floating-card" style="--ry:10deg;left:70%;top:25%;animation-duration:3.8s;animation-delay:0.3s">
+      <div class="fc-num">100%</div>
+      <div class="fc-label">Non-Smoking Rooms</div>
+    </div>
+    <div class="floating-card" style="--ry:-8deg;left:85%;animation-duration:4.2s;animation-delay:0.8s">
+      <div class="fc-num">360°</div>
+      <div class="fc-label">Ocean Views</div>
+    </div>
+  </div>
+</div>
+
+<!-- ATTRACTIONS -->
+<section id="attractions">
+  <div class="attractions-inner">
+    <div class="section-label reveal">Explore Nearby</div>
+    <h2 class="section-title reveal">Local Top </h2>
+    <div class="attractions-layout">
+      <div class="attractions-list">
+        <div class="attraction-item active" data-img="https://files.catbox.moe/u5ooxm.jpg" data-name="International Cuisine Dining">
+          <div class="attraction-item-num">01</div>
+          <div class="attraction-item-name">International Cuisine Dining</div>
+        </div>
+        <div class="attraction-item" data-img="https://media-cdn.tripadvisor.com/media/photo-s/02/96/6e/81/filename-dsc01499-jpg.jpg" data-name="National Museum, Maldives" data-link="https://maps.app.goo.gl/ERGt9e6sabNDyDdJ9">
+          <div class="attraction-item-num">02</div>
+          <div class="attraction-item-name">National Museum, Maldives</div>
+        </div>
+        <div class="attraction-item" data-img="https://plumeriamaldives.com/images/uploads/427/716nalaguraidhoo.webp" data-name="Nalaguraidhoo" data-link="https://maps.app.goo.gl/tJCDjFCcBuGk3e6S9">
+          <div class="attraction-item-num">03</div>
+          <div class="attraction-item-name">Nalaguraidhoo</div>
+        </div>
+        <div class="attraction-item" data-img="https://plumeriamaldives.com/images/uploads/427/178Republic_Square.webp" data-name="Republic Square" data-link="https://maps.app.goo.gl/CbZgSn2fkfBhCD3K6">
+          <div class="attraction-item-num">04</div>
+          <div class="attraction-item-name">Republic Square</div>
+        </div>
+        <div class="attraction-item" data-img="https://plumeriamaldives.com/images/uploads/427/863an_impression_of_an_artist.webp" data-name="Whale Submarine" data-link="https://maps.app.goo.gl/9wUtiJqCH62kYneJ7">
+          <div class="attraction-item-num">05</div>
+          <div class="attraction-item-name">Whale Submarine</div>
+        </div>
+        <div class="attraction-item" data-img="https://plumeriamaldives.com/images/uploads/427/956Majeedhee_Magu__1_.webp" data-name="Majeedhee Magu" data-link="https://maps.app.goo.gl/Sqvh2HFT2hHjGu3y7">
+          <div class="attraction-item-num">06</div>
+          <div class="attraction-item-name">Majeedhee Magu</div>
+        </div>
+      </div>
+      <div class="attraction-display">
+        <img class="attraction-image" id="attraction-img" src="https://plumeriamaldives.com/images/uploads/615/3291_78Beach.jpg" alt="Attraction">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-inner">
+    <div class="section-label reveal">Visual Stories</div>
+    <h2 class="section-title reveal">A Glimpse of <em>Paradise</em></h2>
+    <div class="gallery-masonry">
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/615/3291_344Beach.jpg" alt="Beach" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_531super_deluxe_double_room__1_.webp" alt="Standard Room" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_241super_deluxe_single_room__1_.webp" alt="Deluxe Room" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_428super_deluxe_double_room__2_.webp" alt="Standard Room 2" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_279super_deluxe_single_room__2_.webp" alt="Deluxe Room 2" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_396super_deluxe_double_room__3_.webp" alt="Standard Room 3" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_598super_deluxe_single_room__3_.webp" alt="Deluxe Room 3" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_515super_deluxe_double_room__4_.webp" alt="Standard Room 4" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_696superior_single_room__1_.webp" alt="Garden Room 1" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_22superior_single_room__2_.webp" alt="Garden Room 2" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/427/3291_910superior_single_room__3_.webp" alt="Garden Room 3" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+      <div class="gallery-item"><img src="https://plumeriamaldives.com/images/uploads/615/3291_122Transparent_Ride.jpg" alt="Transparent Ride" loading="lazy"><div class="gallery-item-overlay"><span class="gallery-zoom">View</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testimonials-inner">
+    <div class="section-label reveal" style="justify-content:center;text-align:center">Guest Reviews</div>
+    <h2 class="section-title reveal" style="text-align:center">What Our <em>Guests Say</em></h2>
+    <div class="testimonials-track">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">My room was an ocean view room. This is my second time at a local island in the Maldives and I can say that Thinadhoo and Plumeria are an amazing choice any day. The rooms are spacious, the staff is kind, the location is amazing.</p>
+        <div class="testimonial-author">Rositsa Petrova</div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">Plumeria Hotel exceeded all our expectations! From the moment we arrived, the staff was incredibly warm, attentive, and always ready to help — their hospitality truly made our stay unforgettable. The location is perfect.</p>
+        <div class="testimonial-author">Tomáš Határ</div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">An incredible hotel with very caring and polite staff. The general manager personally welcomes and sees off groups of guests, organizing a grand celebration both upon arrival and departure.</p>
+        <div class="testimonial-author">Maksim A</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog">
+  <div style="max-width:1300px;margin:0 auto">
+    <div class="section-label reveal">Wanderlust Chronicles</div>
+    <h2 class="section-title reveal">Exploring the <em>World</em></h2>
+    <div class="blog-grid">
+      <div class="blog-card reveal">
+        <img src="https://plumeriamaldives.com/images/uploads/427/3291_plumeria_maldives__1_.webp" alt="Blog 1" loading="lazy">
+        <div class="blog-card-body">
+          <div class="blog-category">Hospitality · Luxury</div>
+          <h3 class="blog-title">Luxury, Comfort, and Unmatched Hospitality at Moony Night</h3>
+          <p class="blog-excerpt">Welcome to a destination where hospitality meets perfection. At Plumeria Maldives, we redefine luxury with world-class service, sophisticated accommodations, and a seamless experience tailored to your needs.</p>
+          <a href="https://plumeriamaldives.com/luxury-comfort-and-unmatched-hospitality" class="blog-read-more" target="_blank">Read More →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal">
+        <img src="https://plumeriamaldives.com/images/uploads/427/3291_plumeria_maldives__4_.webp" alt="Blog 2" loading="lazy">
+        <div class="blog-card-body">
+          <div class="blog-category">Travel · Experience</div>
+          <h3 class="blog-title">Escape to Elegance: A Luxurious Stay in Thinadhoo</h3>
+          <p class="blog-excerpt">Step into a world of refined hospitality where every detail is crafted for your comfort. At Plumeria Maldives, we believe in offering more than just a place to stay — we create an experience.</p>
+          <a href="https://plumeriamaldives.com/escape-to-elegance-a-luxurious-stay" class="blog-read-more" target="_blank">Read More →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="faq-inner">
+    <div class="section-label reveal">Need to Know</div>
+    <h2 class="section-title reveal">Frequently Asked <em>Questions</em></h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">What are the Check-In and Check-Out times? <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>Check-in is at 10 AM and check-out is at 12 Noon.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Is smoking allowed on the property? <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>Our hotel rooms are entirely non-smoking. However, designated smoking areas are available at the hotel.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Do you offer room service? What are the hours? <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>Yes, we offer In Room Dining 24 hours a day, with a limited overnight menu available.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Do you have a swimming pool? <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>Yes, our pool is located on the ground floor and is available for all guests to enjoy.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">How do I get to the hotel from the airport? <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>Please see our Maps + Directions on Google. From the airport, the hotel operates speedboats at 10am and 4pm every day. On request, we also provide Sea Plane transfers for a spectacular arrival experience.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Is ID required at check-in? <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>Yes, we require presentation of a valid government-issued identification at the time of check-in.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Can I check in with a debit card? <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>Absolutely. We accept debit cards at check-in. All major credit cards are also accepted.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Are rollaway beds or cribs available? <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>Some of our rooms can accommodate cribs or rollaway beds. There is a per-night charge for all rollaway beds.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">I booked on a third-party website and need to make changes. <span class="faq-toggle">+</span></button>
+        <div class="faq-answer"><p>In this situation, you would need to contact the customer reservations department at the website you used to make your reservation.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div>
+      <div class="section-label reveal">Get In Touch</div>
+      <h2 class="section-title reveal">Contact <em>Us</em></h2>
+      <div style="margin-top:48px">
+        <div class="contact-info-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-value">Moony Night, Thinadhoo, Maldives<br>Vaavu Atoll</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">📞</div>
+          <div>
+            <div class="contact-label">Call Us</div>
+            <div class="contact-value">
+              <a href="tel:+9609339441">+960 933 9441</a><br>
+              <a href="tel:+9609339445">+960 933 9445</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value"><a href="mailto:reservations@plumeriamaldives.com">reservations@plumeriamaldives.com</a></div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">💬</div>
+          <div>
+            <div class="contact-label">WhatsApp</div>
+            <div class="contact-value"><a href="https://wa.me/+9609339441" target="_blank">+960 933 9441</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-socials">
+        <a href="https://www.facebook.com/plumeriamaldives" class="social-btn" target="_blank" title="Facebook">f</a>
+        <a href="https://www.instagram.com/plumeriamaldives/" class="social-btn" target="_blank" title="Instagram">ig</a>
+        <a href="https://www.tripadvisor.com/Hotel_Review-g6851933-d7061199-Reviews-Plumeria_Maldives-Thinadhoo_Island.html" class="social-btn" target="_blank" title="TripAdvisor">ta</a>
+      </div>
+      <a href="https://forms.gle/gE993yuDdKUpkFye9" class="contact-book-btn" target="_blank">Reserve Your Stay →</a>
+    </div>
+    <div class="reveal right">
+      <iframe class="contact-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4941.7286105711755!2d73.5399602!3d3.4894285999999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b38a93e90084445%3A0xd66929aaadda8876!2sPlumeria%20Maldives!5e1!3m2!1sen!2sin!4v1739948319513!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <img src="https://plumeriamaldives.com/images/uploads/logos/1739947328DGF_20250123125900_0766261001737637140_463_Plumeria_logo.png" alt="Plumeria Maldives">
+    <p>Nestled on the pristine shores of Thinadhoo Island in Vaavu Atoll, Plumeria Maldives offers an idyllic blend of affordable luxury and unparalleled comfort.</p>
+  </div>
+  <div>
+    <div class="footer-col-title">Navigation</div>
+    <ul class="footer-links">
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#rooms">Rooms</a></li>
+      <li><a href="#amenities">Amenities</a></li>
+      <li><a href="#attractions">Attractions</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#faq">FAQ's</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Legal</div>
+    <ul class="footer-links">
+      <li><a href="https://plumeriamaldives.com/privacy-policy.html" target="_blank">Privacy Policy</a></li>
+      <li><a href="https://plumeriamaldives.com/refund-policy.html" target="_blank">Refund Policy</a></li>
+      <li><a href="https://plumeriamaldives.com/terms-and-conditions.html" target="_blank">Terms & Conditions</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Connect</div>
+    <ul class="footer-links">
+      <li><a href="https://www.facebook.com/plumeriamaldives" target="_blank">Facebook</a></li>
+      <li><a href="https://www.instagram.com/plumeriamaldives/" target="_blank">Instagram</a></li>
+      <li><a href="https://www.tripadvisor.com/Hotel_Review-g6851933-d7061199-Reviews-Plumeria_Maldives-Thinadhoo_Island.html" target="_blank">TripAdvisor</a></li>
+      <li><a href="https://wa.me/+9609339441" target="_blank">WhatsApp</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span class="footer-copy">© 2025 <span>Plumeria Maldives</span> — All Rights Reserved. Moony Night, Thinadhoo, Maldives.</span>
+  <span class="footer-copy">Designed with ♥ for paradise</span>
+</div>
+
+<script>
+// Custom cursor
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
+animRing();
+document.querySelectorAll('a,button,.room-card,.gallery-item,.attraction-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('expand'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('expand'));
+});
+
+// Hero animations
+setTimeout(()=>{
+  document.getElementById('hero-eyebrow').classList.add('visible');
+  document.getElementById('hero-bg').classList.add('loaded');
+},200);
+setTimeout(()=>document.getElementById('hero-title').classList.add('visible'),500);
+setTimeout(()=>document.getElementById('hero-subtitle').classList.add('visible'),800);
+setTimeout(()=>document.getElementById('hero-cta').classList.add('visible'),1100);
+setTimeout(()=>document.getElementById('hero-scroll').classList.add('visible'),1800);
+
+// Particles
+(function(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<30;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;animation-duration:${6+Math.random()*10}s;animation-delay:${Math.random()*8}s;opacity:${0.3+Math.random()*0.4}`;
+    c.appendChild(p);
+  }
+})();
+
+// Scroll effects
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY;
+  nav.classList.toggle('scrolled',sy>80);
+  // Parallax
+  const pb=document.getElementById('parallax-bg');
+  if(pb){const rect=document.getElementById('parallax-section').getBoundingClientRect();if(rect.top<window.innerHeight&&rect.bottom>0){pb.style.transform=`translateY(${rect.top*0.3}px)`;}}
+});
+
+// Reveal on scroll
+const reveals=document.querySelectorAll('.reveal');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
+},{threshold:0.1,rootMargin:'0px 0px -60px 0px'});
+reveals.forEach(r=>observer.observe(r));
+
+// FAQ accordion
+document.querySelectorAll('.faq-question').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.parentElement;
+    const wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen)item.classList.add('open');
+  });
+});
+
+// Attractions switcher
+const attrImg=document.getElementById('attraction-img');
+document.querySelectorAll('.attraction-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    document.querySelectorAll('.attraction-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+    attrImg.style.opacity='0';
+    setTimeout(()=>{
+      attrImg.src=item.dataset.img;
+      attrImg.alt=item.dataset.name;
+      attrImg.style.opacity='1';
+    },300);
+  });
+});
+
+// Gallery lightbox
+document.querySelectorAll('.gallery-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    const src=item.querySelector('img').src;
+    document.getElementById('lightbox-img').src=src;
+    document.getElementById('lightbox').classList.add('open');
+  });
+});
+document.getElementById('lightbox-close').addEventListener('click',()=>document.getElementById('lightbox').classList.remove('open'));
+document.getElementById('lightbox').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.classList.remove('open')});
+
+// 3D scene mouse parallax
+document.addEventListener('mousemove',e=>{
+  const cards=document.querySelectorAll('.floating-card');
+  const xp=(e.clientX/window.innerWidth-0.5)*20;
+  const yp=(e.clientY/window.innerHeight-0.5)*10;
+  cards.forEach((c,i)=>{const d=i%2===0?1:-1;c.style.transform=`translateX(${xp*d*0.5}px) translateY(${yp*0.5}px)`;});
+});
+
+// Stagger reveal delays
+document.querySelectorAll('.amenity-card').forEach((c,i)=>c.style.transitionDelay=`${i*0.08}s`);
+document.querySelectorAll('.testimonial-card').forEach((c,i)=>c.style.transitionDelay=`${i*0.1}s`);
+document.querySelectorAll('.blog-card').forEach((c,i)=>c.style.transitionDelay=`${i*0.1}s`);
+document.querySelectorAll('.stat-card').forEach((c,i)=>c.style.transitionDelay=`${i*0.08}s`);
+</script>
+</body>
+</html>
